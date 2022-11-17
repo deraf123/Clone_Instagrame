@@ -1,19 +1,59 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getPhotos } from "../../redux/actions/photos";
 import { DetailedCard } from "../../components/DetailedCard";
 import { Layout } from "../../components/Layout";
-
+import InfiniteScroll from "react-infinite-scroll-component";
+import "./style.scss";
+import { Bars } from "react-loader-spinner";
 export const MainPage = () => {
+  const photos = useSelector((state) => state.photos.photos);
+  const loading = useSelector((state) => state.photos.isPhotosLoading);
+  const total = useSelector((state) => state.photos.totalPhotos);
+  const dispatch = useDispatch();
+  const [page, setPage] = useState(1);
+  useEffect(() => {
+    dispatch(getPhotos(page));
+  }, [page]);
+  console.log(photos);
+  const nextHandler = () => {
+    setPage(page + 1);
+  };
   return (
     <Layout nickName='Deraf' id={1}>
-      <div>MainPage</div>
-      <DetailedCard
-        userName='Artem'
-        userId={1}
-        imgUrl='https://bipbap.ru/wp-content/uploads/2017/04/0_7c779_5df17311_orig.jpg'
-        likes={10}
-        isLikedByYou={true}
-        comments={[{ text: "asdf", nickName: "Gerab" },{ text: "asdf", nickName: "Gerab" },{ text: "asdf", nickName: "Gerab" }]}
-      />
+      <div className='cnMainPageRoot'>
+        {loading ? (
+          <div className='cnMainLoaderContainer'>
+            <Bars color='#000BFF' height={80} width={80} />
+          </div>
+        ) : (
+          <InfiniteScroll
+            dataLength={photos.length}
+            next={nextHandler}
+            hasMore={photos.length < total}
+            loader={
+              <div className='cnMainLoaderContainer'>
+                <Bars color='#000BFF' height={25} width={25} />
+              </div>
+            }
+            endMessage={<p className='cnMainLoaderContainer'>Thats all!</p>}
+          >
+            {photos.map(({ author, imgUrl, id, likes, comments }) => (
+              <DetailedCard
+                key={id}
+                userName={author.nickname}
+                userId={author.id}
+                imgUrl={imgUrl}
+                likes={likes.length}
+                isLikedByYou={true}
+                comments={comments}
+                className='cnMainPageCard'
+                avatarUrl={author.avatarUrl}
+              />
+            ))}
+          </InfiniteScroll>
+        )}
+      </div>
     </Layout>
   );
 };

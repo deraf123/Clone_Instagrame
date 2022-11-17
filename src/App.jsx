@@ -1,14 +1,18 @@
+import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { MainPage } from "./pages/MainPage";
 import { UserPage } from "./pages/UserPage";
+import { store } from "./redux/store";
 
 export const App = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<MainPage />} />
-        <Route path='/:id' element={<UserPage />} />
-      </Routes>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<MainPage />} />
+          <Route path='/:id' element={<UserPage />} />
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   );
 };

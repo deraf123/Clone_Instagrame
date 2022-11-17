@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./style.scss";
+import { nanoid } from "nanoid";
+import cn from "classnames";
 import { UserBadge } from "../UserBadge";
 import { Comment } from "../Comment";
 
@@ -11,6 +13,7 @@ export const DetailedCard = ({
   likes,
   isLikedByYou,
   comments,
+  className,
 }) => {
   const [isCommentsShow, setIsCommentsShow] = useState(false);
   const renderComments = () => {
@@ -25,16 +28,18 @@ export const DetailedCard = ({
           >{`Показать еще ${
             comments.length - commentsForRender.length
           } коммкнтариев`}</span>
-          {commentsForRender?.map((comment) => (
-            <Comment {...comment} />
+          {commentsForRender?.map((comment, index) => (
+            <Comment key={nanoid()} {...comment} />
           ))}
         </>
       );
     }
-    return comments?.map((comment) => <Comment {...comment} />);
+    return comments?.map((comment) => (
+      <Comment {...comment} key={comment.text} />
+    ));
   };
   return (
-    <div className='cnDetailedCardRoot'>
+    <div className={cn("cnDetailedCardRoot", className)}>
       <div className='cnDetailedCardHeader'>
         <UserBadge nickname={userName} avatarUrl={avatarUrl} id={userId} />
       </div>
