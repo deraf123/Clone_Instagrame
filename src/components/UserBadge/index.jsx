@@ -2,7 +2,7 @@ import "./style.scss";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-export const UserBadge = ({ nickname, avatarUrl, id }) => {
+export const UserBadge = ({ nickName, avatarUrl, id }) => {
   const navigate = useNavigate();
 
   const userBadgeClick = () => {
@@ -15,7 +15,7 @@ export const UserBadge = ({ nickname, avatarUrl, id }) => {
       ) : (
         <div className='cnUserBadgePlaceholder' />
       )}
-      <span className='cnUserBadgeName'>{nickname}</span>
+      <span className='cnUserBadgeName'>{nickName}</span>
     </div>
   );
 };

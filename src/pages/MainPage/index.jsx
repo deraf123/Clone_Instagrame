@@ -9,18 +9,23 @@ import { Bars } from "react-loader-spinner";
 export const MainPage = () => {
   const photos = useSelector((state) => state.photos.photos);
   const loading = useSelector((state) => state.photos.isPhotosLoading);
+  const authorizedUser = useSelector((state) => state.users.authorizedUser);
   const total = useSelector((state) => state.photos.totalPhotos);
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
   useEffect(() => {
     dispatch(getPhotos(page));
   }, [page]);
-  console.log(photos);
+  console.log(authorizedUser);
   const nextHandler = () => {
     setPage(page + 1);
   };
   return (
-    <Layout nickName='Deraf' id={1}>
+    <Layout
+      nickName={authorizedUser.nickname}
+      id={authorizedUser.id}
+      avatarUrl={authorizedUser.avatarUrl}
+    >
       <div className='cnMainPageRoot'>
         {loading ? (
           <div className='cnMainLoaderContainer'>
@@ -45,7 +50,7 @@ export const MainPage = () => {
                 userId={author.id}
                 imgUrl={imgUrl}
                 likes={likes.length}
-                isLikedByYou={true}
+                isLikedByYou={likes.includes(authorizedUser.id)}
                 comments={comments}
                 className='cnMainPageCard'
                 avatarUrl={author.avatarUrl}

@@ -3,6 +3,9 @@ import {
   getPhotosFailed,
   getPhotosStarted,
   getPhotosSuccess,
+  mutatePhotosFailed,
+  mutatePhotosStarted,
+  mutatePhotosSuccess,
   setPhotosTotal,
 } from "../actionCreates/photos";
 
@@ -27,6 +30,31 @@ export const getPhotos = (page = 1) => {
       }
     } catch (error) {
       dispatch(getPhotosFailed(error));
+    }
+  };
+};
+
+export const mutatePhoto = (userId, photoId) => {
+  return async (dispatch, getState) => {
+    dispatch(mutatePhotosStarted());
+    const state = getState();
+    const photo = state.photos.photos.find((elem) => elem.id === photoId);
+    const newPhoto = {
+      ...photo,
+      likes: [...photo.likes],
+    };
+    if (newPhoto.likes.includes(userId)) {
+      newPhoto.likes = newPhoto.likes.filter((like) => like !== userId);
+    } else {
+      newPhoto.likes.push(userId);
+    }
+    try {
+      await api.photos.mutatePhoto({
+        data: newPhoto,
+      });
+      dispatch(mutatePhotosSuccess());
+    } catch (error) {
+      dispatch(mutatePhotosFailed(error));
     }
   };
 };
